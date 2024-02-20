@@ -12,14 +12,14 @@ Navigate to the folder:
 ```bash
 $ cd face-recognition
 ```
-Install packages:
+Build image:
 ```bash
-$ yarn
+$ docker build ./ -t face-recognition
 
 ```
-Run the API:
+Run container
 ```bash
-$ yarn start
+$ docker run -p 3500:3000 -it face-recognition
 
 ```
 ## Use
