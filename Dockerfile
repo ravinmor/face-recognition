@@ -9,7 +9,17 @@ WORKDIR /usr/src/app
 
 USER root
 
+# Atualize os pacotes e instale o Python
 RUN apt-get update
+RUN apt-get install -y python3 python3-pip
+RUN apt-get install python3.11-venv -y
+RUN python3 -m venv .venv
+# RUN source .venv/bin/activate
+RUN apt-get clean
+
+# Configure o pip e instale pacotes Python conforme necessário
+# RUN python3 -m pip install requests
+
 RUN npm i -g node-pre-gyp
 
 COPY package*.json ./
