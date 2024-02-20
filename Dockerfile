@@ -11,8 +11,8 @@ USER root
 
 RUN apt-get update
 RUN npm i -g node-gyp
-RUN npm i -g @tensorflow/tfjs@3.18.0
-RUN npm i -g @tensorflow/tfjs-node@2.4.1
+RUN npm i -g @tensorflow/tfjs@3.6.0
+RUN npm i -g @tensorflow/tfjs-node
 # RUN npm rebuild @tensorflow/tfjs-node -build-from-source
 
 COPY package*.json ./
