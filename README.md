@@ -6,11 +6,11 @@ A facial recognition API in Node.js.
 
 Clone the repository:
 ```bash
-$ git clone https://github.com/ravinmor/guerrillamail-node-api.git
+$ git clone https://github.com/ravinmor/face-recognition.git
 ```
 Navigate to the folder:
 ```bash
-$ cd guerrillamail-node-api
+$ cd face-recognition
 ```
 Install packages:
 ```bash
