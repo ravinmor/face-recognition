@@ -10,7 +10,8 @@ WORKDIR /usr/src/app
 USER root
 
 RUN apt-get update
-RUN npm i -g node-gyp
+RUN npm i -g node-pre-gyp
+RUN node-pre-gyp rebuild
 RUN npm i -g @tensorflow/tfjs@3.6.0
 RUN npm i -g @tensorflow/tfjs-node
 # RUN npm rebuild @tensorflow/tfjs-node -build-from-source
