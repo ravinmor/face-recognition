@@ -6,20 +6,20 @@ A facial recognition API in Node.js.
 
 Clone the repository:
 ```bash
-$ git clone https://github.com/ravinmor/face-recognition.git
+git clone https://github.com/ravinmor/face-recognition.git
 ```
 Navigate to the folder:
 ```bash
-$ cd face-recognition
+cd face-recognition
 ```
 Build image:
 ```bash
-$ docker build ./ -t face-recognition
+docker build ./ -t face-recognition
 
 ```
 Run container
 ```bash
-$ docker run -p 3500:3000 -it face-recognition
+docker run -p 3500:3000 -it face-recognition
 
 ```
 ## Use
