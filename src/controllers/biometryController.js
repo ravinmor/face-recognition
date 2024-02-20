@@ -9,7 +9,7 @@ export default {
 
             return res.status(200).json(reconResult)
         } catch (error) {
-            return res.status(error.status || 500).json({ message: error });
+            return res.status(error.status || 500).json({ message: 'Internal Error Server' });
         }
     }
     
