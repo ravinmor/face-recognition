@@ -32,7 +32,6 @@ export default {
 
             return res.status(200).json(reconResult)
         } catch (error) {
-            console.error(error);
             return res.status(error.status || 500).json({ message: error.message });
         }
     }

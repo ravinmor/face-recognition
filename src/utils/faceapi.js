@@ -8,8 +8,6 @@ export default {
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
         const pathToWeights = `${__dirname}/../weights`;
-
-        console.log('> Initializing facial recognition')
         
         await faceDetectionNet.loadFromDisk(pathToWeights);
         await faceapi.nets.faceLandmark68Net.loadFromDisk(pathToWeights);

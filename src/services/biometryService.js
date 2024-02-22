@@ -80,12 +80,10 @@ export class BiometryService {
 
         fs.readdir(directoryPath, (err, files) => {
           if (err) {
-            console.error('Erro ao ler diretório: ', err);
-            return;
+            throw err;
           }
         
           numberOfFiles = files.length;
-          console.log('Número de arquivos na pasta: ', numberOfFiles);
         
           // Aqui você pode usar a variável `numberOfFiles` conforme necessário
         });

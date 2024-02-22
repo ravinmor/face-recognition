@@ -16,10 +16,8 @@ export default {
           const data = await readFileAsync(pathToImage);
           const base64Data = data.toString('base64');
           
-          console.log('> Caralho')
           return base64Data;
         } catch (error) {
-          console.error('Error reading image:', error);
           throw error;
         }
       }
