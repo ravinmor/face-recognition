@@ -1,5 +1,6 @@
 export default {
     toSnakeCase(text) {
-        return text.toLowerCase().replace(/\s+/g, '_');
+        const newText = text.toLowerCase().replace(/\s+/g, '_');
+        return newText;
     }
 }

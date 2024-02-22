@@ -10,6 +10,7 @@ const upload = multer({ storage });
 
 routes.get("/", (req, res) => { res.send("Hello world") });
 routes.post("/reconUserface", upload.single('image'), biometryController.recogniseUserface);
+routes.post("/reconUserfaceBinary", biometryController.reconUserfaceBinary);
 
 
 export { routes }

@@ -6,16 +6,17 @@ import { dirname } from 'path';
 import textUtils from '../utils/text.js'
 import { canvas } from '../commons/canvas.js';
 import { faceDetectionNet, faceDetectionOptions } from '../commons/faceDetection.js';
+import { Image } from 'canvas';
 
 export class BiometryService {
   
     constructor() {}
   
-    async verifyUserBiometry({ id }, imageName) {
+    async verifyUserBiometry(id , image) {
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
         const pathToWeights = `${__dirname}/../weights`;
-        const pathToImage = `src/uploads/${imageName}`;
+        const pathToImage = `src/uploads/${image}`;
         await fs.access(pathToImage);
 
         await faceDetectionNet.loadFromDisk(pathToWeights);
@@ -39,18 +40,61 @@ export class BiometryService {
             match: results[0]._label !== 'unknown'
         };
     }
+  
+    async verifyUserBiometryBinary( id , image) {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = dirname(__filename);
+        const pathToWeights = `${__dirname}/../weights`;
+
+        await faceDetectionNet.loadFromDisk(pathToWeights);
+        await faceapi.nets.faceLandmark68Net.loadFromDisk(pathToWeights);
+        await faceapi.nets.faceRecognitionNet.loadFromDisk(pathToWeights);
+
+        const referenceDescriptors = await this.loadUserLabeledImages(id);
+        const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        const userImage = new Image();
+        userImage.src = buffer;
+        
+        const detections = await faceapi.detectAllFaces(userImage)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
+            
+        const faceMatcher = new faceapi.FaceMatcher(referenceDescriptors)
+        const results = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
+        
+        return {
+            id: id,
+            match: results[0]._label !== 'unknown'
+        };
+    }
 
     loadUserLabeledImages(id) {
-        const labels = [textUtils.toSnakeCase(id)];
+        const labels = [ textUtils.toSnakeCase(id) ];
 
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
+        const directoryPath = `${__dirname}/../labeled_images/${textUtils.toSnakeCase(id)}`
+        let numberOfFiles;
+
+        fs.readdir(directoryPath, (err, files) => {
+          if (err) {
+            console.error('Erro ao ler diretório: ', err);
+            return;
+          }
+        
+          numberOfFiles = files.length;
+          console.log('Número de arquivos na pasta: ', numberOfFiles);
+        
+          // Aqui você pode usar a variável `numberOfFiles` conforme necessário
+        });
 
         return Promise.all(
             labels.map(async label => {
             const descriptions = [];
 
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= numberOfFiles; i++) {
                 const pathToImage = `${__dirname}/../labeled_images/${label}/${i}.jpg`;
                 await fs.access(pathToImage);
 
