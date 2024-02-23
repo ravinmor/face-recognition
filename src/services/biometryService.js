@@ -56,58 +56,55 @@ export class BiometryService {
 
         const userImage = new Image();
         userImage.src = buffer;
-        
+
         const detections = await faceapi.detectAllFaces(userImage)
             .withFaceLandmarks()
             .withFaceDescriptors();
-            
-        const faceMatcher = new faceapi.FaceMatcher(referenceDescriptors)
-        const results = detections.map(d => faceMatcher.findBestMatch(d.descriptor))
-        
+
+        const faceMatcher = new faceapi.FaceMatcher(referenceDescriptors);
+        const results = detections.map(d => faceMatcher.findBestMatch(d.descriptor));
+
+        const match = results.length == 0 ? false : (results[0]._label !== 'unknown');
+
         return {
             id: id,
-            match: results[0]._label !== 'unknown'
+            match
         };
     }
 
-    loadUserLabeledImages(id) {
-        const labels = [ textUtils.toSnakeCase(id) ];
-
+    async loadUserLabeledImages(id) {
+        const labels = [textUtils.toSnakeCase(id)];
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
-        const directoryPath = `${__dirname}/../labeled_images/${textUtils.toSnakeCase(id)}`
-        let numberOfFiles;
+        const directoryPath = `${__dirname}/../labeled_images/${textUtils.toSnakeCase(id)}`;
 
-        fs.readdir(directoryPath, (err, files) => {
-          if (err) {
+        try {
+            const files = await fs.readdir(directoryPath);
+            const numberOfFiles = files.length;
+
+            return Promise.all(
+                labels.map(async label => {
+                    const descriptions = [];
+
+                    for (let i = 1; i <= numberOfFiles; i++) {
+                        const pathToImage = `${__dirname}/../labeled_images/${label}/${i}.jpg`;
+                        await fs.access(pathToImage);
+
+                        const image = await canvas.loadImage(pathToImage);
+
+                        const detections = await faceapi.detectSingleFace(image, faceDetectionOptions)
+                            .withFaceLandmarks()
+                            .withFaceDescriptor();
+
+                        descriptions.push(detections.descriptor);
+                    }
+
+                    return new faceapi.LabeledFaceDescriptors(label, descriptions);
+                })
+            );
+        } catch (err) {
             throw err;
-          }
-        
-          numberOfFiles = files.length;
-        
-          // Aqui você pode usar a variável `numberOfFiles` conforme necessário
-        });
-
-        return Promise.all(
-            labels.map(async label => {
-            const descriptions = [];
-
-            for (let i = 1; i <= numberOfFiles; i++) {
-                const pathToImage = `${__dirname}/../labeled_images/${label}/${i}.jpg`;
-                await fs.access(pathToImage);
-
-                const image = await canvas.loadImage(pathToImage);
-
-                const detections = await faceapi.detectSingleFace(image, faceDetectionOptions)
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
-        
-                descriptions.push(detections.descriptor);
-            }
-
-            const descritorsArray = new faceapi.LabeledFaceDescriptors(label, descriptions);
-            return descritorsArray;
-            })
-        )
+        }
     }
+
 } 

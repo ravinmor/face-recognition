@@ -23,7 +23,6 @@ export default {
             const __dirname = dirname(__filename);
     
             const pathToImage = `${__dirname}/../labeled_images/${req.body.id}/`;
-            // Verificando se o diretório existe
             if (!fs.existsSync(pathToImage)) {
                 throw { status: 403, message: 'User not found' };
             }
@@ -32,6 +31,7 @@ export default {
 
             return res.status(200).json(reconResult)
         } catch (error) {
+            console.error(error)
             return res.status(error.status || 500).json({ message: error.message });
         }
     }
