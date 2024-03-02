@@ -21,13 +21,19 @@ export default {
         try {
             const __filename = fileURLToPath(import.meta.url);
             const __dirname = dirname(__filename);
+
+            function removerMascaraCPF(cpf) {
+                return cpf.replace(/\D/g, '');
+            }
+            
+            var cpfSemMascara = removerMascaraCPF(req.body.id);
     
-            const pathToImage = `${__dirname}/../labeled_images/${req.body.id}/`;
+            const pathToImage = `${__dirname}/../labeled_images/${cpfSemMascara}/`;
             if (!fs.existsSync(pathToImage)) {
                 throw { status: 403, message: 'User not found' };
             }
 
-            const reconResult = await service.verifyUserBiometryBinary(req.body.id, req.body.image);
+            const reconResult = await service.verifyUserBiometryBinary(cpfSemMascara, req.body.image);
 
             return res.status(200).json(reconResult)
         } catch (error) {
