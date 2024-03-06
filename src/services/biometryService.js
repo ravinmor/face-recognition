@@ -69,7 +69,7 @@ export class BiometryService {
             id: id,
             match
         }
-        console.log(resultBiometry)
+        console.log(results)
         return resultBiometry;
     }
 
