@@ -65,11 +65,12 @@ export class BiometryService {
         const results = detections.map(d => faceMatcher.findBestMatch(d.descriptor));
 
         const match = results.length == 0 ? false : (results[0]._label !== 'unknown');
-
-        return {
+        const resultBiometry = {
             id: id,
             match
-        };
+        }
+        console.log(resultBiometry)
+        return resultBiometry;
     }
 
     async loadUserLabeledImages(id) {
